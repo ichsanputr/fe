@@ -52,7 +52,7 @@ export default {
     methods: {
         async login() {
             try {
-                const resp = await this.$axios.post("http://localhost:8080/auth/login", this.form);
+                const resp = await this.$axios.post("http://3.87.65.67/auth/login", this.form);
                 localStorage.setItem('token', resp.data.access_token)
                 this.$router.push('/')
             } catch (err){

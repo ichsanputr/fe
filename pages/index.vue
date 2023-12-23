@@ -95,7 +95,7 @@ export default {
     })
 
     this.socket.on('notifyReloadChat', async (v) => {
-      const { data } = await this.$axios.post("http://localhost:8080/chat/pair", {
+      const { data } = await this.$axios.post("http://3.87.65.67/chat/pair", {
         chat_id: v
       }, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
 
@@ -104,10 +104,10 @@ export default {
     })
 
     try {
-      const data = await this.$axios.get("http://localhost:8080/auth/profile", { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
+      const data = await this.$axios.get("http://3.87.65.67/auth/profile", { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
       this.username = data.data.data.user.username
 
-      const resp = await this.$axios.get("http://localhost:8080/chat/users", { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
+      const resp = await this.$axios.get("http://3.87.65.67/chat/users", { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
       this.users = resp.data.data
     } catch (err) {
       console.log(err)
@@ -117,7 +117,7 @@ export default {
     async changePairChat(id) {
       this.currentChat = id
 
-      const { data } = await this.$axios.post("http://localhost:8080/chat/pair", {
+      const { data } = await this.$axios.post("http://3.87.65.67/chat/pair", {
         chat_id: this.currentChat
       }, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
 
@@ -125,12 +125,12 @@ export default {
       this.pairName = data.data.pair_name
     },
     async postMessage() {
-      await this.$axios.post("http://localhost:8080/chat/message", {
+      await this.$axios.post("http://3.87.65.67/chat/message", {
         chat_id: this.currentChat,
         message: this.message
       }, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
 
-      const { data } = await this.$axios.post("http://localhost:8080/chat/pair", {
+      const { data } = await this.$axios.post("http://3.87.65.67/chat/pair", {
         chat_id: this.currentChat
       }, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
 
