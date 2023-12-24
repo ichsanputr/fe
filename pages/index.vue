@@ -1,8 +1,8 @@
 <template>
   <!-- component -->
-  <div class="flex h-screen overflow-hidden">
+  <div class="flex h-full overflow-hidden">
     <!-- Sidebar -->
-    <div v-if="showContacts" class="w-1/2 md:w-1/4 bg-white border-r border-gray-300">
+    <div v-if="showContacts" class="absolute w-1/2 md:w-1/4 bg-white border-r border-b border-gray-300">
       <!-- Sidebar Header -->
       <header class="p-4 border-b border-gray-300 flex justify-between items-center bg-indigo-600 text-white">
         <h1 class="text-xl font-semibold">Hi {{ username }}👋</h1>
@@ -10,7 +10,7 @@
       </header>
 
       <!-- Contact List -->
-      <div class="overflow-y-auto h-screen p-3 mb-9 pb-20">
+      <div class="p-3">
         <div v-for="item in users" @click="changePairChat(item.chat_id)"
           class="flex items-center mb-4 cursor-pointer hover:bg-gray-100 p-2 rounded-md">
           <div class="w-12 h-12 bg-gray-300 rounded-full mr-3">
@@ -28,16 +28,17 @@
     <!-- Main Chat Area -->
     <div class="flex-1">
       <!-- Chat Header -->
-      <header class="bg-white p-4 text-gray-700 border-b-2 border-gray-100 flex">
-        <svg class="mt-1 mr-2 cursor-pointer" @click="showContacts = !showContacts" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+      <header class="bg-white p-4 text-gray-700 border-b-2 border-gray-100 flex justify-between">
+        <h1 class="text-2xl font-semibold">{{ pairName }}</h1>
+        <svg class="mt-1 mr-2 cursor-pointer" @click="showContacts = !showContacts" xmlns="http://www.w3.org/2000/svg"
+          width="24" height="24" viewBox="0 0 24 24">
           <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M5 17h14M5 12h14M5 7h14" />
         </svg>
-        <h1 class="text-2xl font-semibold">{{ pairName }}</h1>
       </header>
 
       <!-- Chat Messages -->
-      <div class="h-screen overflow-y-auto p-4 pb-36">
+      <div class="overflow-y-auto p-4 pb-36">
         <div v-for="chat in currentPairChat">
           <!-- Incoming Message -->
           <div v-if="chat.is_me == 0" class="flex mb-4 cursor-pointer">
@@ -64,7 +65,7 @@
       </div>
 
       <!-- Chat Input -->
-      <footer class="bg-white border-t border-gray-300 p-4 absolute bottom-0" :class="showContacts ? 'w-3/4' : 'w-full'">
+      <footer class="bg-white border-t border-gray-300 p-4 absolute bottom-0" :class="showContacts ? 'w-full' : 'w-full'">
         <div class="flex items-center">
           <input v-model="message" type="text" placeholder="Type a message..."
             class="w-full p-2 rounded-md border border-gray-400 focus:outline-none focus:border-blue-500">
@@ -126,6 +127,7 @@ export default {
   methods: {
     async changePairChat(id) {
       this.currentChat = id
+      this.showContacts = false
 
       const { data } = await this.$axios.post(`${process.env.api}chat/pair`, {
         chat_id: this.currentChat
