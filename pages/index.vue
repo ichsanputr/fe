@@ -105,7 +105,7 @@ export default {
     })
 
     this.socket.on('notifyReloadChat', async (v) => {
-      const { data } = await this.$axios.post(`${process.env.api}/chat/pair`, {
+      const { data } = await this.$axios.post(`${process.env.api}chat/pair`, {
         chat_id: v
       }, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
 
