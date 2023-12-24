@@ -38,7 +38,7 @@
       </header>
 
       <!-- Chat Messages -->
-      <div class="overflow-y-auto p-4 pb-36">
+      <div class="overflow-y-auto px-4 pb-16">
         <div v-for="chat in currentPairChat">
           <!-- Incoming Message -->
           <div v-if="chat.is_me == 0" class="flex mb-4 cursor-pointer">
@@ -65,7 +65,7 @@
       </div>
 
       <!-- Chat Input -->
-      <footer class="bg-white border-t border-gray-300 p-4 absolute bottom-0" :class="showContacts ? 'w-full' : 'w-full'">
+      <footer class="bottom-0 fixed bg-white border-t border-gray-300 p-4 bottom-0" :class="showContacts ? 'w-full' : 'w-full'">
         <div class="flex items-center">
           <input v-model="message" type="text" placeholder="Type a message..."
             class="w-full p-2 rounded-md border border-gray-400 focus:outline-none focus:border-blue-500">
