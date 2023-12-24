@@ -49,10 +49,10 @@ export default {
     },
     async mounted() {
     },
-    methods: {
+    methods: {  
         async login() {
             try {
-                const resp = await this.$axios.post("http://localhost:8080/auth/login", this.form);
+                const resp = await this.$axios.post(`${process.env.api}auth/login`, this.form);
                 localStorage.setItem('token', resp.data.access_token)
                 this.$router.push('/')
             } catch (err){

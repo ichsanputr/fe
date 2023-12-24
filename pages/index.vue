@@ -2,7 +2,7 @@
   <!-- component -->
   <div class="flex h-screen overflow-hidden">
     <!-- Sidebar -->
-    <div class="w-1/4 bg-white border-r border-gray-300">
+    <div v-if="showContacts" class="w-1/2 md:w-1/4 bg-white border-r border-gray-300">
       <!-- Sidebar Header -->
       <header class="p-4 border-b border-gray-300 flex justify-between items-center bg-indigo-600 text-white">
         <h1 class="text-xl font-semibold">Hi {{ username }}👋</h1>
@@ -28,7 +28,11 @@
     <!-- Main Chat Area -->
     <div class="flex-1">
       <!-- Chat Header -->
-      <header class="bg-white p-4 text-gray-700 border-b-2 border-gray-100">
+      <header class="bg-white p-4 text-gray-700 border-b-2 border-gray-100 flex">
+        <svg class="mt-1 mr-2 cursor-pointer" @click="showContacts = !showContacts" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M5 17h14M5 12h14M5 7h14" />
+        </svg>
         <h1 class="text-2xl font-semibold">{{ pairName }}</h1>
       </header>
 
@@ -60,7 +64,7 @@
       </div>
 
       <!-- Chat Input -->
-      <footer class="bg-white border-t border-gray-300 p-4 absolute bottom-0 w-3/4">
+      <footer class="bg-white border-t border-gray-300 p-4 absolute bottom-0" :class="showContacts ? 'w-3/4' : 'w-full'">
         <div class="flex items-center">
           <input v-model="message" type="text" placeholder="Type a message..."
             class="w-full p-2 rounded-md border border-gray-400 focus:outline-none focus:border-blue-500">
@@ -82,10 +86,16 @@ export default {
       currentPairChat: [],
       pairName: '',
       message: '',
-      socket: ''
+      socket: '',
+      showContacts: true
     }
   },
   async mounted() {
+    if (!localStorage.getItem('token')) {
+      this.$router.push('/login')
+      return
+    }
+
     this.socket = this.$nuxtSocket({
       name: 'main',
       channel: 'chat',
@@ -95,7 +105,7 @@ export default {
     })
 
     this.socket.on('notifyReloadChat', async (v) => {
-      const { data } = await this.$axios.post("http://localhost:8080/chat/pair", {
+      const { data } = await this.$axios.post(`${process.env.api}/chat/pair`, {
         chat_id: v
       }, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
 
@@ -104,10 +114,10 @@ export default {
     })
 
     try {
-      const data = await this.$axios.get("http://localhost:8080/auth/profile", { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
+      const data = await this.$axios.get(`${process.env.api}auth/profile`, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
       this.username = data.data.data.user.username
 
-      const resp = await this.$axios.get("http://localhost:8080/chat/users", { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
+      const resp = await this.$axios.get(`${process.env.api}chat/users`, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
       this.users = resp.data.data
     } catch (err) {
       console.log(err)
@@ -117,7 +127,7 @@ export default {
     async changePairChat(id) {
       this.currentChat = id
 
-      const { data } = await this.$axios.post("http://localhost:8080/chat/pair", {
+      const { data } = await this.$axios.post(`${process.env.api}chat/pair`, {
         chat_id: this.currentChat
       }, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
 
@@ -125,12 +135,12 @@ export default {
       this.pairName = data.data.pair_name
     },
     async postMessage() {
-      await this.$axios.post("http://localhost:8080/chat/message", {
+      await this.$axios.post(`${process.env.api}chat/message`, {
         chat_id: this.currentChat,
         message: this.message
       }, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
 
-      const { data } = await this.$axios.post("http://localhost:8080/chat/pair", {
+      const { data } = await this.$axios.post(`${process.env.api}chat/pair`, {
         chat_id: this.currentChat
       }, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
 

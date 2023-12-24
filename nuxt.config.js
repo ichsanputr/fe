@@ -1,4 +1,7 @@
 export default {
+  env: {
+    api: 'http://localhost:8080/'
+  },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     title: 'frontend',
